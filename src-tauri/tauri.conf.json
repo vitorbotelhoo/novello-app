@@ -16,7 +16,9 @@
         "width": 800,
         "height": 600,
         "titleBarStyle": "Overlay",
-        "transparent": true
+        "transparent": true,
+        "decorations": true,
+        "trafficLightPosition": { "x": 13, "y": 23 }
       }
     ],
     "macOSPrivateApi": true,

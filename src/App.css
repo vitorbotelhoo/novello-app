@@ -12,6 +12,9 @@ body {
   background: transparent;
 }
 
+/* Corners are rounded natively by the window's content layer (see
+   window_chrome.rs); CSS keeps the content square and lets the native clip
+   shape it, avoiding a double-radius white edge at the corners. */
 #root {
   margin: 0;
   padding: 0;
@@ -19,7 +22,6 @@ body {
   width: 100%;
   overflow: hidden;
   background: transparent;
-  border-radius: 18px;
 }
 
 body {

@@ -9,6 +9,7 @@ import { useWindowTitle } from "./useWindowTitle";
 import { useNativeMenu } from "./useNativeMenu";
 import { useEditFocusZoom } from "./useEditFocusZoom";
 import { useToolShortcuts } from "./useToolShortcuts";
+import { useWindowChrome } from "./useWindowChrome";
 import { useSelectionStore } from "./selectionStore";
 import { useToolStore } from "./toolStore";
 import { CanvasGrid } from "./CanvasGrid";
@@ -36,6 +37,7 @@ export function Canvas() {
   useNativeMenu();
   useEditFocusZoom();
   useToolShortcuts();
+  useWindowChrome();
 
   // Wheel needs a native, non-passive listener so we can preventDefault
   // (React's onWheel is passive by default and can't stop page scroll/zoom).

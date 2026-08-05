@@ -1,3 +1,5 @@
+mod window_chrome;
+
 use tauri::menu::{MenuBuilder, SubmenuBuilder};
 use tauri::Emitter;
 
@@ -7,6 +9,7 @@ pub fn run() {
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_dialog::init())
+        .invoke_handler(tauri::generate_handler![window_chrome::apply_window_chrome])
         .setup(|app| {
             let app_menu = SubmenuBuilder::new(app, "novello")
                 .about(None)

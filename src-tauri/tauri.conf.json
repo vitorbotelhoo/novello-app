@@ -13,16 +13,12 @@
     "windows": [
       {
         "title": "novello",
-        "width": 800,
-        "height": 600,
+        "width": 900,
+        "height": 680,
         "minWidth": 520,
-        "minHeight": 400,
-        "transparent": true,
-        "titleBarStyle": "Overlay",
-        "hiddenTitle": true
+        "minHeight": 400
       }
     ],
-    "macOSPrivateApi": true,
     "security": {
       "csp": null
     }

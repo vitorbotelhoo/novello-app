@@ -5,6 +5,8 @@ import { useCanvasKeyboard } from "./useCanvasKeyboard";
 import { useWorldTransform } from "./useWorldTransform";
 import { useCreateNode } from "./useCreateNode";
 import { useMarqueeSelect } from "./useMarqueeSelect";
+import { useWindowTitle } from "./useWindowTitle";
+import { useNativeMenu } from "./useNativeMenu";
 import { useSelectionStore } from "./selectionStore";
 import { CanvasGrid } from "./CanvasGrid";
 import { EdgeLayer } from "./EdgeLayer";
@@ -21,6 +23,8 @@ export function Canvas() {
 
   useCanvasKeyboard();
   useWorldTransform(worldRef);
+  useWindowTitle();
+  useNativeMenu();
 
   // Wheel needs a native, non-passive listener so we can preventDefault
   // (React's onWheel is passive by default and can't stop page scroll/zoom).

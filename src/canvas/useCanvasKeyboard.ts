@@ -3,6 +3,7 @@ import { useCanvasStore } from "./store";
 import { useSelectionStore } from "./selectionStore";
 import { useNodesStore } from "./nodesStore";
 import { computeFitViewport } from "./zoomToFit";
+import { saveFile, saveAs, openFile, newMap } from "./fileCommands";
 
 const ARROW_STEP = 60;
 const ARROW_STEP_FAST = 240;
@@ -34,6 +35,25 @@ export function useCanvasKeyboard() {
           nodes.deleteEdges(Array.from(selection.selectedEdgeIds));
         }
         selection.clearSelection();
+        return;
+      }
+
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "s") {
+        e.preventDefault();
+        if (e.shiftKey) void saveAs();
+        else void saveFile();
+        return;
+      }
+
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "o") {
+        e.preventDefault();
+        void openFile();
+        return;
+      }
+
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "n") {
+        e.preventDefault();
+        newMap();
         return;
       }
 

@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { useFileStore } from "./fileStore";
 
 export interface CanvasNode {
   id: string;
@@ -41,6 +42,10 @@ interface NodesState {
   addEdge: (fromNodeId: string, toNodeId: string) => string | null;
   deleteEdges: (ids: string[]) => void;
   edgesForNode: (nodeId: string) => string[];
+
+  /** Bulk replace (Open) and reset (New Map). Unlike the actions above, these don't mark the file dirty. */
+  loadFile: (nodes: CanvasNode[], edges: CanvasEdge[]) => void;
+  clear: () => void;
 }
 
 export const useNodesStore = create<NodesState>((set, get) => ({
@@ -51,24 +56,29 @@ export const useNodesStore = create<NodesState>((set, get) => ({
     const id = generateId();
     const node: CanvasNode = { id, x, y, text, color: nextColor() };
     set((state) => ({ nodes: { ...state.nodes, [id]: node } }));
+    useFileStore.getState().markDirty();
     return id;
   },
 
-  updateText: (id, text) =>
+  updateText: (id, text) => {
     set((state) => {
       const node = state.nodes[id];
       if (!node) return state;
       return { nodes: { ...state.nodes, [id]: { ...node, text } } };
-    }),
+    });
+    useFileStore.getState().markDirty();
+  },
 
-  moveNode: (id, x, y) =>
+  moveNode: (id, x, y) => {
     set((state) => {
       const node = state.nodes[id];
       if (!node) return state;
       return { nodes: { ...state.nodes, [id]: { ...node, x, y } } };
-    }),
+    });
+    useFileStore.getState().markDirty();
+  },
 
-  moveNodes: (ids, dx, dy) =>
+  moveNodes: (ids, dx, dy) => {
     set((state) => {
       const nodes = { ...state.nodes };
       for (const id of ids) {
@@ -76,9 +86,11 @@ export const useNodesStore = create<NodesState>((set, get) => ({
         if (node) nodes[id] = { ...node, x: node.x + dx, y: node.y + dy };
       }
       return { nodes };
-    }),
+    });
+    useFileStore.getState().markDirty();
+  },
 
-  deleteNodes: (ids) =>
+  deleteNodes: (ids) => {
     set((state) => {
       const idSet = new Set(ids);
       const nodes = { ...state.nodes };
@@ -91,7 +103,9 @@ export const useNodesStore = create<NodesState>((set, get) => ({
         }
       }
       return { nodes, edges };
-    }),
+    });
+    useFileStore.getState().markDirty();
+  },
 
   addEdge: (fromNodeId, toNodeId) => {
     if (fromNodeId === toNodeId) return null;
@@ -105,18 +119,29 @@ export const useNodesStore = create<NodesState>((set, get) => ({
     const id = generateId();
     const edge: CanvasEdge = { id, fromNodeId, toNodeId };
     set((state) => ({ edges: { ...state.edges, [id]: edge } }));
+    useFileStore.getState().markDirty();
     return id;
   },
 
-  deleteEdges: (ids) =>
+  deleteEdges: (ids) => {
     set((state) => {
       const edges = { ...state.edges };
       for (const id of ids) delete edges[id];
       return { edges };
-    }),
+    });
+    useFileStore.getState().markDirty();
+  },
 
   edgesForNode: (nodeId) =>
     Object.values(get().edges)
       .filter((edge) => edge.fromNodeId === nodeId || edge.toNodeId === nodeId)
       .map((edge) => edge.id),
+
+  loadFile: (nodes, edges) =>
+    set({
+      nodes: Object.fromEntries(nodes.map((n) => [n.id, n])),
+      edges: Object.fromEntries(edges.map((e) => [e.id, e])),
+    }),
+
+  clear: () => set({ nodes: {}, edges: {} }),
 }));

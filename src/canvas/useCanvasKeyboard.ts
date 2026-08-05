@@ -1,8 +1,9 @@
 import { useEffect } from "react";
-import { useCanvasStore } from "./store";
+import { useCanvasStore, DEFAULT_VIEWPORT } from "./store";
 import { useSelectionStore } from "./selectionStore";
 import { useNodesStore } from "./nodesStore";
-import { computeFitViewport } from "./zoomToFit";
+import { computeFitViewport, computeFitViewportForNodeIds } from "./zoomToFit";
+import { animateViewport } from "./viewportAnimation";
 import { saveFile, saveAs, openFile, newMap } from "./fileCommands";
 
 const ARROW_STEP = 60;
@@ -59,15 +60,22 @@ export function useCanvasKeyboard() {
 
       if ((e.metaKey || e.ctrlKey) && e.key === "0") {
         e.preventDefault();
-        store.reset();
+        animateViewport(DEFAULT_VIEWPORT);
         return;
       }
 
       if ((e.metaKey || e.ctrlKey) && e.key === "1") {
         e.preventDefault();
         const fitViewport = computeFitViewport();
-        if (fitViewport) store.setViewport(fitViewport);
-        else store.reset();
+        animateViewport(fitViewport ?? DEFAULT_VIEWPORT);
+        return;
+      }
+
+      if ((e.metaKey || e.ctrlKey) && e.key === "2") {
+        e.preventDefault();
+        const selection = useSelectionStore.getState();
+        const fitViewport = computeFitViewportForNodeIds(Array.from(selection.selectedNodeIds));
+        if (fitViewport) animateViewport(fitViewport);
         return;
       }
 

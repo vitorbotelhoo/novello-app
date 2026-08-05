@@ -1,0 +1,63 @@
+.novello-toolbar {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 6px;
+  border-radius: 14px;
+  background: var(--novello-bg);
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.12),
+    0 0 0 1px rgba(0, 0, 0, 0.06);
+  z-index: 10;
+}
+
+.novello-toolbar-divider {
+  width: 1px;
+  height: 22px;
+  margin: 0 4px;
+  background: var(--novello-grid-dot);
+}
+
+.novello-toolbar-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 9px;
+  background: transparent;
+  color: #55505c;
+  cursor: pointer;
+  transition:
+    background-color 0.12s ease,
+    color 0.12s ease;
+}
+
+.novello-toolbar-button:hover:not(:disabled) {
+  background: rgba(143, 107, 156, 0.12);
+}
+
+.novello-toolbar-button--active {
+  background: var(--novello-thread-selected);
+  color: white;
+}
+
+.novello-toolbar-button--active:hover {
+  background: var(--novello-thread-selected);
+}
+
+.novello-toolbar-button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+@media (prefers-color-scheme: dark) {
+  .novello-toolbar-button {
+    color: #d8d0dc;
+  }
+}

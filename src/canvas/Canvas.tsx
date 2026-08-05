@@ -14,6 +14,8 @@ import { useToolStore } from "./toolStore";
 import { CanvasGrid } from "./CanvasGrid";
 import { EdgeLayer } from "./EdgeLayer";
 import { NodeLayer } from "./NodeLayer";
+import { Toolbar } from "./Toolbar";
+import { ZoomIndicator } from "./ZoomIndicator";
 import "./Canvas.css";
 
 export function Canvas() {
@@ -99,6 +101,8 @@ export function Canvas() {
           }}
         />
       )}
+      <ZoomIndicator />
+      <Toolbar />
     </div>
   );
 }

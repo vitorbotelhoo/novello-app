@@ -1,0 +1,25 @@
+.novello-zoom-indicator {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  min-width: 48px;
+  padding: 6px 10px;
+  border-radius: 9px;
+  background: var(--novello-bg);
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.12),
+    0 0 0 1px rgba(0, 0, 0, 0.06);
+  font-family: var(--novello-font);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: #55505c;
+  text-align: center;
+  pointer-events: none;
+  z-index: 10;
+}
+
+@media (prefers-color-scheme: dark) {
+  .novello-zoom-indicator {
+    color: #d8d0dc;
+  }
+}

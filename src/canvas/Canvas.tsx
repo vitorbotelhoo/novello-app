@@ -16,6 +16,7 @@ import { EdgeLayer } from "./EdgeLayer";
 import { NodeLayer } from "./NodeLayer";
 import { Toolbar } from "./Toolbar";
 import { ZoomIndicator } from "./ZoomIndicator";
+import { TitleBar } from "./TitleBar";
 import "./Canvas.css";
 
 export function Canvas() {
@@ -85,6 +86,7 @@ export function Canvas() {
       onClick={onRootClick}
       onDoubleClick={createNode.onDoubleClick}
     >
+      <TitleBar />
       <CanvasGrid />
       <div ref={worldRef} className="canvas-world">
         <EdgeLayer />

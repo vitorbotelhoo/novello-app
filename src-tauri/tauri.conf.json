@@ -14,9 +14,15 @@
       {
         "title": "novello",
         "width": 800,
-        "height": 600
+        "height": 600,
+        "minWidth": 520,
+        "minHeight": 400,
+        "transparent": true,
+        "titleBarStyle": "Overlay",
+        "hiddenTitle": true
       }
     ],
+    "macOSPrivateApi": true,
     "security": {
       "csp": null
     }

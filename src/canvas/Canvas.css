@@ -20,6 +20,8 @@
   inset: 0;
   overflow: hidden;
   background-color: var(--novello-bg);
+  border-radius: 18px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08);
   touch-action: none;
   user-select: none;
 }

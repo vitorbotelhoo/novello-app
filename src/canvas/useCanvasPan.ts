@@ -1,15 +1,15 @@
 import { useCallback, useEffect, useRef } from "react";
 import { useCanvasStore } from "./store";
+import { getEffectiveTool } from "./toolStore";
 
 const MIDDLE_MOUSE_BUTTON = 1;
 
 /**
- * Pan gestures: trackpad two-finger scroll / mouse wheel (primary), or
- * space+left-drag / middle-mouse-drag (secondary, for mouse users).
- * Plain left-drag is intentionally left free for future node selection.
+ * Pan gestures: trackpad two-finger scroll / mouse wheel (always), or plain
+ * left-drag whenever the hand tool is effectively active (explicitly selected,
+ * or the space bar is held), or middle-mouse-drag regardless of active tool.
  */
 export function useCanvasPan() {
-  const isSpaceHeld = useRef(false);
   const isPanning = useRef(false);
   const lastPoint = useRef({ x: 0, y: 0 });
   const pendingDelta = useRef({ dx: 0, dy: 0 });
@@ -30,21 +30,6 @@ export function useCanvasPan() {
     }
   }, [flush]);
 
-  useEffect(() => {
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.code === "Space") isSpaceHeld.current = true;
-    };
-    const onKeyUp = (e: KeyboardEvent) => {
-      if (e.code === "Space") isSpaceHeld.current = false;
-    };
-    window.addEventListener("keydown", onKeyDown);
-    window.addEventListener("keyup", onKeyUp);
-    return () => {
-      window.removeEventListener("keydown", onKeyDown);
-      window.removeEventListener("keyup", onKeyUp);
-    };
-  }, []);
-
   useEffect(() => () => {
     if (rafId.current != null) cancelAnimationFrame(rafId.current);
   }, []);
@@ -60,7 +45,7 @@ export function useCanvasPan() {
 
   const onPointerDown = useCallback((e: React.PointerEvent) => {
     const shouldPan =
-      e.button === MIDDLE_MOUSE_BUTTON || (e.button === 0 && isSpaceHeld.current);
+      e.button === MIDDLE_MOUSE_BUTTON || (e.button === 0 && getEffectiveTool() === "hand");
     if (!shouldPan) return;
     isPanning.current = true;
     lastPoint.current = { x: e.clientX, y: e.clientY };

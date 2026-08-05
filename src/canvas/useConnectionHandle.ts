@@ -3,6 +3,7 @@ import { useCanvasStore } from "./store";
 import { useNodesStore } from "./nodesStore";
 import { useConnectionDragStore } from "./connectionDragStore";
 import { screenToWorld } from "./coords";
+import { getEffectiveTool } from "./toolStore";
 
 function findNodeIdAtScreenPoint(x: number, y: number, excludeId: string): string | null {
   const el = document.elementFromPoint(x, y);
@@ -15,6 +16,7 @@ function findNodeIdAtScreenPoint(x: number, y: number, excludeId: string): strin
 export function useConnectionHandle(nodeId: string) {
   const onPointerDown = useCallback(
     (e: React.PointerEvent) => {
+      if (getEffectiveTool() !== "select") return; // let it bubble so the hand tool can pan instead
       e.stopPropagation();
       const viewport = useCanvasStore.getState().viewport;
       const world = screenToWorld({ x: e.clientX, y: e.clientY }, viewport);

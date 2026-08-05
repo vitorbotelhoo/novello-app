@@ -4,6 +4,7 @@ import { useSelectionStore } from "./selectionStore";
 import { useNodeDrag } from "./useNodeDrag";
 import { useConnectionHandle } from "./useConnectionHandle";
 import { hashString, mulberry32 } from "./prng";
+import { getEffectiveTool } from "./toolStore";
 
 const MAX_TILT_DEGREES = 2.5;
 
@@ -48,11 +49,13 @@ export function NodeCard({ node }: NodeCardProps) {
   };
 
   const onDoubleClick = (e: React.MouseEvent) => {
+    if (getEffectiveTool() !== "select") return;
     e.stopPropagation();
     useSelectionStore.getState().startEditing(node.id);
   };
 
   const onClick = (e: React.MouseEvent) => {
+    if (getEffectiveTool() !== "select") return;
     e.stopPropagation();
     if (drag.moved.current) {
       drag.moved.current = false;

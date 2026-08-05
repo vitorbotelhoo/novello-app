@@ -7,7 +7,10 @@ import { useCreateNode } from "./useCreateNode";
 import { useMarqueeSelect } from "./useMarqueeSelect";
 import { useWindowTitle } from "./useWindowTitle";
 import { useNativeMenu } from "./useNativeMenu";
+import { useEditFocusZoom } from "./useEditFocusZoom";
+import { useToolShortcuts } from "./useToolShortcuts";
 import { useSelectionStore } from "./selectionStore";
+import { useToolStore } from "./toolStore";
 import { CanvasGrid } from "./CanvasGrid";
 import { EdgeLayer } from "./EdgeLayer";
 import { NodeLayer } from "./NodeLayer";
@@ -20,11 +23,16 @@ export function Canvas() {
   const zoom = useCanvasZoom();
   const createNode = useCreateNode();
   const marquee = useMarqueeSelect();
+  const tool = useToolStore((s) => s.tool);
+  const isSpaceHeld = useToolStore((s) => s.isSpaceHeld);
+  const effectiveTool = isSpaceHeld ? "hand" : tool;
 
   useCanvasKeyboard();
   useWorldTransform(worldRef);
   useWindowTitle();
   useNativeMenu();
+  useEditFocusZoom();
+  useToolShortcuts();
 
   // Wheel needs a native, non-passive listener so we can preventDefault
   // (React's onWheel is passive by default and can't stop page scroll/zoom).
@@ -68,7 +76,7 @@ export function Canvas() {
   return (
     <div
       ref={rootRef}
-      className="canvas-root"
+      className={`canvas-root${effectiveTool === "hand" ? " canvas-root--hand" : ""}`}
       onPointerDown={onRootPointerDown}
       onPointerMove={onRootPointerMove}
       onPointerUp={onRootPointerUp}

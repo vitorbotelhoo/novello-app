@@ -2,6 +2,7 @@ import { useCallback, useRef } from "react";
 import { useCanvasStore } from "./store";
 import { useNodesStore } from "./nodesStore";
 import { useSelectionStore } from "./selectionStore";
+import { getEffectiveTool } from "./toolStore";
 
 const DRAG_THRESHOLD = 4;
 
@@ -18,6 +19,7 @@ export function useNodeDrag(nodeId: string) {
 
   const onPointerDown = useCallback((e: React.PointerEvent) => {
     if (e.button !== 0) return;
+    if (getEffectiveTool() !== "select") return; // let it bubble so the hand tool can pan instead
     isDragging.current = true;
     moved.current = false;
     lastPoint.current = { x: e.clientX, y: e.clientY };

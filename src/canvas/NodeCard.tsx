@@ -1,8 +1,17 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNodesStore, type CanvasNode } from "./nodesStore";
 import { useSelectionStore } from "./selectionStore";
 import { useNodeDrag } from "./useNodeDrag";
 import { useConnectionHandle } from "./useConnectionHandle";
+import { hashString, mulberry32 } from "./prng";
+
+const MAX_TILT_DEGREES = 2.5;
+
+/** Small deterministic tilt per node, like a hand-placed sticky note rather than a rigid grid. */
+function nodeTilt(nodeId: string): number {
+  const rand = mulberry32(hashString(nodeId + ":tilt"));
+  return (rand() * 2 - 1) * MAX_TILT_DEGREES;
+}
 
 interface NodeCardProps {
   node: CanvasNode;
@@ -15,6 +24,7 @@ export function NodeCard({ node }: NodeCardProps) {
   const handle = useConnectionHandle(node.id);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [draft, setDraft] = useState(node.text);
+  const tilt = useMemo(() => nodeTilt(node.id), [node.id]);
 
   useEffect(() => {
     if (isEditing) setDraft(node.text);
@@ -82,7 +92,7 @@ export function NodeCard({ node }: NodeCardProps) {
   return (
     <div
       className={`canvas-node${isSelected ? " canvas-node--selected" : ""}`}
-      style={{ left: node.x, top: node.y, backgroundColor: node.color }}
+      style={{ left: node.x, top: node.y, backgroundColor: node.color, "--node-tilt": `${tilt}deg` } as React.CSSProperties}
       data-node-id={node.id}
       onPointerDown={drag.onPointerDown}
       onPointerMove={drag.onPointerMove}

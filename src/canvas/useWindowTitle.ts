@@ -15,6 +15,10 @@ export function useWindowTitle() {
   useEffect(() => {
     const name = currentPath ? basename(currentPath) : "Untitled";
     const title = `${isDirty ? "• " : ""}${name} - novello`;
-    void getCurrentWindow().setTitle(title);
+    try {
+      void getCurrentWindow().setTitle(title);
+    } catch {
+      // No Tauri IPC bridge (e.g. running the frontend outside the native shell); cosmetic only.
+    }
   }, [currentPath, isDirty]);
 }

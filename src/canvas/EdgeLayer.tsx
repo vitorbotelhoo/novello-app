@@ -1,7 +1,7 @@
 import { useNodesStore } from "./nodesStore";
 import { useSelectionStore } from "./selectionStore";
 import { useConnectionDragStore } from "./connectionDragStore";
-import { buildThreadPath } from "./threadPath";
+import { buildThreadPath, threadColor } from "./threadPath";
 
 export function EdgeLayer() {
   const nodes = useNodesStore((s) => s.nodes);
@@ -23,6 +23,7 @@ export function EdgeLayer() {
             key={edge.id}
             className={`canvas-edge${isSelected ? " canvas-edge--selected" : ""}`}
             d={buildThreadPath(from.x, from.y, to.x, to.y, edge.id)}
+            style={{ stroke: isSelected ? undefined : threadColor(edge.id) }}
             data-edge-id={edge.id}
             onClick={(e) => {
               e.stopPropagation();

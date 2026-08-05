@@ -6,6 +6,8 @@ import { useCanvasStore } from "./store";
 import { computeFitViewport, computeFitViewportForNodeIds } from "./zoomToFit";
 import { animateViewport } from "./viewportAnimation";
 import { screenToWorld } from "./coords";
+import { Tooltip } from "./Tooltip";
+import { SHORTCUT_KEYS } from "./shortcuts";
 import "./Toolbar.css";
 
 function addBoxAtViewportCenter() {
@@ -31,17 +33,18 @@ export function Toolbar() {
   const setTool = useToolStore((s) => s.setTool);
   const hasSelection = useSelectionStore((s) => s.selectedNodeIds.size > 0);
 
-  const toolButton = (value: Tool, label: string, Icon: typeof MousePointer2) => (
-    <button
-      type="button"
-      className={`novello-toolbar-button${tool === value ? " novello-toolbar-button--active" : ""}`}
-      title={label}
-      aria-label={label}
-      aria-pressed={tool === value}
-      onClick={() => setTool(value)}
-    >
-      <Icon size={18} strokeWidth={1.75} />
-    </button>
+  const toolButton = (value: Tool, label: string, shortcut: string, Icon: typeof MousePointer2) => (
+    <Tooltip label={label} shortcut={shortcut}>
+      <button
+        type="button"
+        className={`novello-toolbar-button${tool === value ? " novello-toolbar-button--active" : ""}`}
+        aria-label={label}
+        aria-pressed={tool === value}
+        onClick={() => setTool(value)}
+      >
+        <Icon size={18} strokeWidth={1.75} />
+      </button>
+    </Tooltip>
   );
 
   return (
@@ -51,37 +54,40 @@ export function Toolbar() {
       onClick={(e) => e.stopPropagation()}
       onDoubleClick={(e) => e.stopPropagation()}
     >
-      {toolButton("select", "Select (V)", MousePointer2)}
-      {toolButton("hand", "Hand (H)", Hand)}
+      {toolButton("select", "Select", SHORTCUT_KEYS.select, MousePointer2)}
+      {toolButton("hand", "Hand", SHORTCUT_KEYS.hand, Hand)}
       <div className="novello-toolbar-divider" />
-      <button
-        type="button"
-        className="novello-toolbar-button"
-        title="Add box"
-        aria-label="Add box"
-        onClick={addBoxAtViewportCenter}
-      >
-        <SquarePlus size={18} strokeWidth={1.75} />
-      </button>
-      <button
-        type="button"
-        className="novello-toolbar-button"
-        title="Fit to content (⌘1)"
-        aria-label="Fit to content"
-        onClick={fitToContent}
-      >
-        <Maximize2 size={18} strokeWidth={1.75} />
-      </button>
-      <button
-        type="button"
-        className="novello-toolbar-button"
-        title="Fit to selected (⌘2)"
-        aria-label="Fit to selected"
-        disabled={!hasSelection}
-        onClick={fitToSelected}
-      >
-        <Focus size={18} strokeWidth={1.75} />
-      </button>
+      <Tooltip label="Add node">
+        <button
+          type="button"
+          className="novello-toolbar-button"
+          aria-label="Add node"
+          onClick={addBoxAtViewportCenter}
+        >
+          <SquarePlus size={18} strokeWidth={1.75} />
+        </button>
+      </Tooltip>
+      <Tooltip label="Fit to content" shortcut={SHORTCUT_KEYS.fitContent}>
+        <button
+          type="button"
+          className="novello-toolbar-button"
+          aria-label="Fit to content"
+          onClick={fitToContent}
+        >
+          <Maximize2 size={18} strokeWidth={1.75} />
+        </button>
+      </Tooltip>
+      <Tooltip label="Fit to selection" shortcut={SHORTCUT_KEYS.fitSelected}>
+        <button
+          type="button"
+          className="novello-toolbar-button"
+          aria-label="Fit to selection"
+          disabled={!hasSelection}
+          onClick={fitToSelected}
+        >
+          <Focus size={18} strokeWidth={1.75} />
+        </button>
+      </Tooltip>
     </div>
   );
 }

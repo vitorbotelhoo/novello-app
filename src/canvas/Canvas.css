@@ -159,6 +159,46 @@
   pointer-events: none;
 }
 
+.canvas-edge-hit {
+  fill: none;
+  stroke: transparent;
+  stroke-linecap: round;
+  pointer-events: stroke;
+  cursor: pointer;
+}
+
+.canvas-edge-cut {
+  cursor: pointer;
+  animation: novello-cut-in 0.12s ease-out;
+}
+
+.canvas-edge-cut circle {
+  fill: var(--novello-bg);
+  stroke: var(--novello-thread-selected);
+}
+
+.canvas-edge-cut line {
+  stroke: var(--novello-thread-selected);
+  stroke-linecap: round;
+}
+
+.canvas-edge-cut:hover circle {
+  fill: var(--novello-thread-selected);
+}
+
+.canvas-edge-cut:hover line {
+  stroke: var(--novello-bg);
+}
+
+@keyframes novello-cut-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 .canvas-node--editing {
   cursor: text;
   box-shadow:

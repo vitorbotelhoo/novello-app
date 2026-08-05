@@ -3,6 +3,7 @@ import { writeTextFile, readTextFile } from "@tauri-apps/plugin-fs";
 import { useNodesStore } from "./nodesStore";
 import { useFileStore } from "./fileStore";
 import { useSelectionStore } from "./selectionStore";
+import { useHistoryStore } from "./historyStore";
 import { useCanvasStore } from "./store";
 import { serialize, parse } from "./fileFormat";
 
@@ -47,6 +48,7 @@ export async function openFile(): Promise<void> {
     const { nodes, edges } = parse(content);
     useNodesStore.getState().loadFile(nodes, edges);
     useSelectionStore.getState().clearSelection();
+    useHistoryStore.getState().clear();
     useFileStore.getState().setCurrentPath(path);
     useFileStore.getState().markClean();
   } catch (err) {
@@ -57,6 +59,7 @@ export async function openFile(): Promise<void> {
 export function newMap(): void {
   useNodesStore.getState().clear();
   useSelectionStore.getState().clearSelection();
+  useHistoryStore.getState().clear();
   useCanvasStore.getState().reset();
   useFileStore.getState().setCurrentPath(null);
   useFileStore.getState().markClean();

@@ -1,5 +1,13 @@
 import { create } from "zustand";
 import { useFileStore } from "./fileStore";
+import { useHistoryStore } from "./historyStore";
+
+// Snapshot the pre-change graph so the mutation about to run can be undone.
+// Circular import with historyStore is safe: both only touch each other via
+// getState() at call time, never at module-eval time.
+function recordHistory() {
+  useHistoryStore.getState().recordBefore();
+}
 
 export interface CanvasNode {
   id: string;
@@ -43,6 +51,11 @@ interface NodesState {
   deleteEdges: (ids: string[]) => void;
   edgesForNode: (nodeId: string) => string[];
 
+  /** Clone the given nodes at a small offset (one atomic step). Returns the new ids. */
+  duplicateNodes: (ids: string[]) => string[];
+  /** Create a node connected to `parentId` by a new edge (one atomic step). Returns the child id. */
+  addChildNode: (parentId: string) => string | null;
+
   /** Bulk replace (Open) and reset (New Map). Unlike the actions above, these don't mark the file dirty. */
   loadFile: (nodes: CanvasNode[], edges: CanvasEdge[]) => void;
   clear: () => void;
@@ -53,6 +66,7 @@ export const useNodesStore = create<NodesState>((set, get) => ({
   edges: {},
 
   addNode: (x, y, text = "") => {
+    recordHistory();
     const id = generateId();
     const node: CanvasNode = { id, x, y, text, color: nextColor() };
     set((state) => ({ nodes: { ...state.nodes, [id]: node } }));
@@ -61,6 +75,7 @@ export const useNodesStore = create<NodesState>((set, get) => ({
   },
 
   updateText: (id, text) => {
+    recordHistory();
     set((state) => {
       const node = state.nodes[id];
       if (!node) return state;
@@ -91,6 +106,7 @@ export const useNodesStore = create<NodesState>((set, get) => ({
   },
 
   deleteNodes: (ids) => {
+    recordHistory();
     set((state) => {
       const idSet = new Set(ids);
       const nodes = { ...state.nodes };
@@ -116,6 +132,7 @@ export const useNodesStore = create<NodesState>((set, get) => ({
     );
     if (alreadyExists) return null;
 
+    recordHistory();
     const id = generateId();
     const edge: CanvasEdge = { id, fromNodeId, toNodeId };
     set((state) => ({ edges: { ...state.edges, [id]: edge } }));
@@ -124,6 +141,7 @@ export const useNodesStore = create<NodesState>((set, get) => ({
   },
 
   deleteEdges: (ids) => {
+    recordHistory();
     set((state) => {
       const edges = { ...state.edges };
       for (const id of ids) delete edges[id];
@@ -136,6 +154,44 @@ export const useNodesStore = create<NodesState>((set, get) => ({
     Object.values(get().edges)
       .filter((edge) => edge.fromNodeId === nodeId || edge.toNodeId === nodeId)
       .map((edge) => edge.id),
+
+  duplicateNodes: (ids) => {
+    recordHistory();
+    const newIds: string[] = [];
+    set((state) => {
+      const nodes = { ...state.nodes };
+      for (const id of ids) {
+        const src = state.nodes[id];
+        if (!src) continue;
+        const newId = generateId();
+        nodes[newId] = { ...src, id: newId, x: src.x + 28, y: src.y + 28 };
+        newIds.push(newId);
+      }
+      return { nodes };
+    });
+    useFileStore.getState().markDirty();
+    return newIds;
+  },
+
+  addChildNode: (parentId) => {
+    const parent = get().nodes[parentId];
+    if (!parent) return null;
+    recordHistory();
+    const childId = generateId();
+    const edgeId = generateId();
+    set((state) => ({
+      nodes: {
+        ...state.nodes,
+        [childId]: { id: childId, x: parent.x + 260, y: parent.y, text: "", color: nextColor() },
+      },
+      edges: {
+        ...state.edges,
+        [edgeId]: { id: edgeId, fromNodeId: parentId, toNodeId: childId },
+      },
+    }));
+    useFileStore.getState().markDirty();
+    return childId;
+  },
 
   loadFile: (nodes, edges) =>
     set({

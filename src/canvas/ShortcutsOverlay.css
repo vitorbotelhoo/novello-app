@@ -1,0 +1,110 @@
+.novello-help-button {
+  position: fixed;
+  right: 16px;
+  bottom: 20px;
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 50%;
+  background: var(--novello-bg);
+  color: #7a7280;
+  font-family: var(--novello-font);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.12),
+    0 0 0 1px rgba(0, 0, 0, 0.06);
+  z-index: 10;
+  transition:
+    color 0.12s ease,
+    transform 0.12s ease;
+}
+
+.novello-help-button:hover {
+  color: var(--novello-thread-selected);
+  transform: translateY(-1px);
+}
+
+.novello-shortcuts-backdrop {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(20, 16, 24, 0.35);
+  backdrop-filter: blur(2px);
+  z-index: 40;
+}
+
+.novello-shortcuts-panel {
+  max-width: min(680px, 90vw);
+  max-height: 80vh;
+  overflow-y: auto;
+  padding: 22px 24px;
+  border-radius: 16px;
+  background: var(--novello-bg);
+  box-shadow:
+    0 16px 48px rgba(0, 0, 0, 0.28),
+    0 0 0 1px rgba(0, 0, 0, 0.06);
+  font-family: var(--novello-font);
+}
+
+.novello-shortcuts-header {
+  font-size: 15px;
+  font-weight: 600;
+  color: #33303a;
+  margin-bottom: 16px;
+}
+
+.novello-shortcuts-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px 32px;
+}
+
+.novello-shortcuts-group-title {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #a39aad;
+  margin-bottom: 8px;
+}
+
+.novello-shortcuts-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 3px 0;
+}
+
+.novello-shortcuts-label {
+  font-size: 13px;
+  color: #55505c;
+}
+
+.novello-shortcuts-keys {
+  flex-shrink: 0;
+  padding: 2px 7px;
+  border-radius: 6px;
+  background: rgba(143, 107, 156, 0.12);
+  font-size: 12px;
+  color: var(--novello-thread-selected);
+  white-space: nowrap;
+}
+
+@media (prefers-color-scheme: dark) {
+  .novello-help-button {
+    color: #9a90a4;
+  }
+  .novello-shortcuts-header {
+    color: #ece7f0;
+  }
+  .novello-shortcuts-label {
+    color: #c4bccc;
+  }
+  .novello-shortcuts-keys {
+    color: #d8c2e2;
+  }
+}

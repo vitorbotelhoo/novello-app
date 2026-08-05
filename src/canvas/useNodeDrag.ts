@@ -2,6 +2,7 @@ import { useCallback, useRef } from "react";
 import { useCanvasStore } from "./store";
 import { useNodesStore } from "./nodesStore";
 import { useSelectionStore } from "./selectionStore";
+import { useHistoryStore, type Snapshot } from "./historyStore";
 import { getEffectiveTool } from "./toolStore";
 
 const DRAG_THRESHOLD = 4;
@@ -16,12 +17,15 @@ export function useNodeDrag(nodeId: string) {
   const isDragging = useRef(false);
   const moved = useRef(false);
   const lastPoint = useRef({ x: 0, y: 0 });
+  const preDragSnapshot = useRef<Snapshot | null>(null);
 
   const onPointerDown = useCallback((e: React.PointerEvent) => {
     if (e.button !== 0) return;
     if (getEffectiveTool() !== "select") return; // let it bubble so the hand tool can pan instead
     isDragging.current = true;
     moved.current = false;
+    // Capture pre-drag state now; commit to history only if the drag actually moves.
+    preDragSnapshot.current = useHistoryStore.getState().captureSnapshot();
     lastPoint.current = { x: e.clientX, y: e.clientY };
     try {
       (e.currentTarget as Element).setPointerCapture(e.pointerId);
@@ -57,6 +61,10 @@ export function useNodeDrag(nodeId: string) {
   const onPointerUp = useCallback((e: React.PointerEvent) => {
     if (!isDragging.current) return;
     isDragging.current = false;
+    if (moved.current && preDragSnapshot.current) {
+      useHistoryStore.getState().pushSnapshot(preDragSnapshot.current);
+    }
+    preDragSnapshot.current = null;
     try {
       (e.currentTarget as Element).releasePointerCapture(e.pointerId);
     } catch {

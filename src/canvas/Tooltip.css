@@ -1,0 +1,44 @@
+.novello-tooltip-wrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.novello-tooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 8px;
+  border-radius: 8px;
+  white-space: nowrap;
+  background: #2a2530;
+  color: #f2eef5;
+  font-family: var(--novello-font);
+  font-size: 12px;
+  line-height: 1;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 0.12s ease,
+    transform 0.12s ease;
+  transition-delay: 0s;
+  z-index: 30;
+}
+
+.novello-tooltip-wrap:hover .novello-tooltip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  transition-delay: 0.35s;
+}
+
+.novello-tooltip-key {
+  padding: 2px 5px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.14);
+  font-size: 11px;
+  color: #d8d0dc;
+}

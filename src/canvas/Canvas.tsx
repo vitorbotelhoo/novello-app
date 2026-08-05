@@ -18,6 +18,7 @@ import { NodeLayer } from "./NodeLayer";
 import { Toolbar } from "./Toolbar";
 import { ZoomIndicator } from "./ZoomIndicator";
 import { TitleBar } from "./TitleBar";
+import { ShortcutsOverlay } from "./ShortcutsOverlay";
 import "./Canvas.css";
 
 export function Canvas() {
@@ -107,6 +108,7 @@ export function Canvas() {
       )}
       <ZoomIndicator />
       <Toolbar />
+      <ShortcutsOverlay />
     </div>
   );
 }

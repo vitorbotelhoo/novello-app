@@ -71,23 +71,25 @@ export function NodeCard({ node }: NodeCardProps) {
         style={{ left: node.x, top: node.y, backgroundColor: node.color }}
         data-node-id={node.id}
       >
-        <textarea
-          ref={textareaRef}
-          className="canvas-node-textarea"
-          value={draft}
-          onChange={(e) => setDraft(e.target.value)}
-          onBlur={commit}
-          onKeyDown={(e) => {
-            e.stopPropagation();
-            if (e.key === "Enter" && !e.shiftKey) {
-              e.preventDefault();
-              commit();
-            } else if (e.key === "Escape") {
-              e.preventDefault();
-              cancel();
-            }
-          }}
-        />
+        <div className="canvas-node-content">
+          <textarea
+            ref={textareaRef}
+            className="canvas-node-textarea"
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+            onBlur={commit}
+            onKeyDown={(e) => {
+              e.stopPropagation();
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                commit();
+              } else if (e.key === "Escape") {
+                e.preventDefault();
+                cancel();
+              }
+            }}
+          />
+        </div>
       </div>
     );
   }
@@ -103,7 +105,9 @@ export function NodeCard({ node }: NodeCardProps) {
       onClick={onClick}
       onDoubleClick={onDoubleClick}
     >
-      <span className="canvas-node-text">{node.text || "New idea"}</span>
+      <div className="canvas-node-content">
+        <span className="canvas-node-text">{node.text || "New idea"}</span>
+      </div>
       <div
         className="canvas-node-handle"
         onPointerDown={handle.onPointerDown}

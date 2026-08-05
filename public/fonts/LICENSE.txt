@@ -1,0 +1,7 @@
+TASA Explorer
+
+Source: Google Fonts (https://fonts.google.com/specimen/TASA+Explorer)
+License: SIL Open Font License 1.1 (https://openfontlicense.org)
+
+Self-hosted here (rather than loaded from Google's CDN) to keep novello
+fully local and offline-capable.

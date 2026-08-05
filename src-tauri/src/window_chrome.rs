@@ -72,6 +72,34 @@ pub fn apply_window_chrome<R: Runtime>(
     }
 }
 
+/// Re-applies only the traffic-light position. macOS resets it to the default
+/// on resize/fullscreen, so the frontend calls this on every resize event.
+#[tauri::command]
+pub fn reposition_traffic_lights<R: Runtime>(
+    window: WebviewWindow<R>,
+    offset_x: Option<f64>,
+    offset_y: Option<f64>,
+) -> Result<(), String> {
+    #[cfg(target_os = "macos")]
+    {
+        let off_x = offset_x.unwrap_or(0.0);
+        let off_y = offset_y.unwrap_or(0.0);
+        window
+            .with_webview(move |webview| unsafe {
+                let ns_window = webview.ns_window() as id;
+                position_traffic_lights(ns_window, off_x, off_y);
+            })
+            .map_err(|e| e.to_string())?;
+        Ok(())
+    }
+
+    #[cfg(not(target_os = "macos"))]
+    {
+        let _ = (window, offset_x, offset_y);
+        Ok(())
+    }
+}
+
 #[cfg(target_os = "macos")]
 unsafe fn position_traffic_lights(ns_window: id, offset_x: f64, offset_y: f64) {
     let base_x = 20.0 + offset_x;

@@ -1,6 +1,6 @@
 mod window_chrome;
 
-use tauri::menu::{MenuBuilder, SubmenuBuilder};
+use tauri::menu::{Menu, SubmenuBuilder};
 use tauri::Emitter;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -9,43 +9,24 @@ pub fn run() {
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_dialog::init())
-        .invoke_handler(tauri::generate_handler![window_chrome::apply_window_chrome])
+        .invoke_handler(tauri::generate_handler![
+            window_chrome::apply_window_chrome,
+            window_chrome::reposition_traffic_lights
+        ])
         .setup(|app| {
-            let app_menu = SubmenuBuilder::new(app, "novello")
-                .about(None)
-                .separator()
-                .services()
-                .separator()
-                .hide()
-                .hide_others()
-                .show_all()
-                .separator()
-                .quit()
-                .build()?;
-
+            // Start from the full native menu (app / Edit / View / Window / Help) so the
+            // native Window menu — with Minimize, Zoom, Fill, Center, Tile — stays intact,
+            // then insert our File menu right after the app menu.
             let file_menu = SubmenuBuilder::new(app, "File")
                 .text("menu-new", "New")
                 .text("menu-open", "Open...")
                 .separator()
                 .text("menu-save", "Save")
                 .text("menu-save-as", "Save As...")
-                .separator()
-                .close_window()
                 .build()?;
 
-            let edit_menu = SubmenuBuilder::new(app, "Edit")
-                .undo()
-                .redo()
-                .separator()
-                .cut()
-                .copy()
-                .paste()
-                .select_all()
-                .build()?;
-
-            let menu = MenuBuilder::new(app)
-                .items(&[&app_menu, &file_menu, &edit_menu])
-                .build()?;
+            let menu = Menu::default(app.handle())?;
+            menu.insert(&file_menu, 1)?;
             app.set_menu(menu)?;
 
             let app_handle = app.handle().clone();

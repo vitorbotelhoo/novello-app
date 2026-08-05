@@ -25,15 +25,6 @@
   user-select: none;
 }
 
-.canvas-drag-region {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 28px;
-  z-index: 20;
-}
-
 .canvas-root--hand {
   cursor: grab;
 }

@@ -85,8 +85,6 @@ export function Canvas() {
       onClick={onRootClick}
       onDoubleClick={createNode.onDoubleClick}
     >
-      {/* Overlay title bar means no native chrome to drag by; this reserves a strip for it. */}
-      <div data-tauri-drag-region className="canvas-drag-region" />
       <CanvasGrid />
       <div ref={worldRef} className="canvas-world">
         <EdgeLayer />

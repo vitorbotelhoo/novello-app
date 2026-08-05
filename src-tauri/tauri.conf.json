@@ -15,10 +15,10 @@
         "title": "novello",
         "width": 800,
         "height": 600,
-        "titleBarStyle": "Overlay",
+        "titleBarStyle": "Transparent",
+        "hiddenTitle": true,
         "transparent": true,
-        "decorations": true,
-        "trafficLightPosition": { "x": 13, "y": 23 }
+        "decorations": true
       }
     ],
     "macOSPrivateApi": true,

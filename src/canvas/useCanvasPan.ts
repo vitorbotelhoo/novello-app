@@ -64,7 +64,11 @@ export function useCanvasPan() {
     if (!shouldPan) return;
     isPanning.current = true;
     lastPoint.current = { x: e.clientX, y: e.clientY };
-    (e.currentTarget as Element).setPointerCapture(e.pointerId);
+    try {
+      (e.currentTarget as Element).setPointerCapture(e.pointerId);
+    } catch {
+      // Capture can fail for pointer ids the browser no longer considers active; harmless.
+    }
     e.preventDefault();
   }, []);
 
@@ -84,7 +88,11 @@ export function useCanvasPan() {
   const onPointerUp = useCallback((e: React.PointerEvent) => {
     if (!isPanning.current) return;
     isPanning.current = false;
-    (e.currentTarget as Element).releasePointerCapture(e.pointerId);
+    try {
+      (e.currentTarget as Element).releasePointerCapture(e.pointerId);
+    } catch {
+      // Already released/not captured; harmless.
+    }
   }, []);
 
   return { onWheel, onPointerDown, onPointerMove, onPointerUp, isPanning };

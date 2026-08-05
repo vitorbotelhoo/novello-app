@@ -1,5 +1,8 @@
 import { useEffect } from "react";
 import { useCanvasStore } from "./store";
+import { useSelectionStore } from "./selectionStore";
+import { useNodesStore } from "./nodesStore";
+import { computeFitViewport } from "./zoomToFit";
 
 const ARROW_STEP = 60;
 const ARROW_STEP_FAST = 240;
@@ -10,6 +13,30 @@ export function useCanvasKeyboard() {
     const onKeyDown = (e: KeyboardEvent) => {
       const store = useCanvasStore.getState();
 
+      if (e.key === "Enter") {
+        const selection = useSelectionStore.getState();
+        if (selection.selectedNodeIds.size === 1 && !selection.editingNodeId) {
+          e.preventDefault();
+          selection.startEditing(Array.from(selection.selectedNodeIds)[0]);
+        }
+        return;
+      }
+
+      if (e.key === "Backspace" || e.key === "Delete") {
+        const selection = useSelectionStore.getState();
+        if (selection.selectedNodeIds.size === 0 && selection.selectedEdgeIds.size === 0) return;
+        e.preventDefault();
+        const nodes = useNodesStore.getState();
+        if (selection.selectedNodeIds.size > 0) {
+          nodes.deleteNodes(Array.from(selection.selectedNodeIds));
+        }
+        if (selection.selectedEdgeIds.size > 0) {
+          nodes.deleteEdges(Array.from(selection.selectedEdgeIds));
+        }
+        selection.clearSelection();
+        return;
+      }
+
       if ((e.metaKey || e.ctrlKey) && e.key === "0") {
         e.preventDefault();
         store.reset();
@@ -18,8 +45,9 @@ export function useCanvasKeyboard() {
 
       if ((e.metaKey || e.ctrlKey) && e.key === "1") {
         e.preventDefault();
-        // Zoom-to-fit stub: no node bounds exist yet, falls back to reset.
-        store.reset();
+        const fitViewport = computeFitViewport();
+        if (fitViewport) store.setViewport(fitViewport);
+        else store.reset();
         return;
       }
 

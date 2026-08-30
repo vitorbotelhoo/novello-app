@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Novello is a working mind-mapping app, not a scaffold. The infinite canvas, nodes, thread connections, selection, undo/redo, local file persistence, a native File menu, and custom macOS window chrome are all implemented. See `../NOVELLO.md` (one level up) for the founding product vision, that's the source of truth for intent.
 
-This will be a public, open-source repo.
+This will be a public, open-source repo. The same frontend is also deployed as a plain web app at `novello.vitor.ink` (see Web build below).
 
 ## Stack
 
@@ -48,6 +48,18 @@ Two things that script exists to handle, don't undo them:
 
 The signature is ad-hoc, so the built app is only trusted on the machine that built it. Distribution would need a real Developer ID and notarization.
 
+### Web build (novello.vitor.ink)
+
+The Vite frontend also ships as a static web app. Vercel project `novello` (team `vitorbotelho-projects`) is Git-connected to `github.com/vitorbotelhoo/novello-app`, production branch `main`, so every push to `main` deploys. `vercel.json` pins the Vite preset, an SPA rewrite, asset cache headers, and a strict same-origin CSP. `.vercelignore` keeps `src-tauri/` (multi-GB `target/`) out of CLI uploads. The `novello.vitor.ink` subdomain is auto-provisioned because `vitor.ink` sits on Vercel nameservers; the separate `vitor.ink` project is untouched.
+
+`src/canvas/env.ts` `isTauri()` is the single switch between native and web. Outside Tauri:
+
+- `fileCommands.ts` saves by downloading a `.novello` blob (name from a `prompt()`) and opens via a hidden file input, instead of the Tauri dialog + fs plugins.
+- `useWebPersistence.ts` mirrors every graph change into `localStorage` (debounced) and restores it on load, so a refresh doesn't lose an unsaved map. It also adds a `beforeunload` guard.
+- `useNativeMenu`, `useWindowChrome`, and `useWindowTitle` bail early (the last one sets `document.title` instead). Without those guards the browser build throws an unhandled rejection reaching into the missing Tauri IPC bridge on load.
+
+There is no visible File UI on the web yet: New/Open/Save are keyboard-only (`Cmd+N`/`O`/`S`). Threads still use the old sine path; the dashed gradient stroke (step 5 in `../DESIGN_SYSTEM_PLAN.md`) is not done.
+
 ## Architecture
 
 ### Frontend
@@ -85,7 +97,7 @@ Behavior is split into `use*` hooks (`useCanvasPan`, `useCanvasZoom`, `useCanvas
 
 **File format**: `.novello` files are JSON, `{ version: 1, nodes: [], edges: [] }`, see `fileFormat.ts`. `parse()` rejects unknown versions outright. Bump `CURRENT_VERSION` and add migration if the shape changes.
 
-**Graceful degradation outside Tauri**: hooks touching native APIs (`useWindowChrome`, `useNativeMenu`) swallow their errors so `npm run dev` in a plain browser still works.
+**Graceful degradation outside Tauri**: `isTauri()` (`src/canvas/env.ts`) gates every native code path. Hooks touching native APIs bail early outside the shell, and `fileCommands.ts` has a full browser fallback. See Web build above. Keep new native calls behind that check.
 
 ## Window chrome, handle with care
 

@@ -1,0 +1,7 @@
+# The web deploy only builds the Vite frontend. Everything native is irrelevant
+# and src-tauri/target alone is multiple GB.
+src-tauri
+scripts
+node_modules
+dist
+*.log

@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { invoke } from "@tauri-apps/api/core";
+import { isTauri } from "./env";
 
 const CHROME = { cornerRadius: 18, offsetX: 6, offsetY: 8 };
 
@@ -11,6 +12,8 @@ const CHROME = { cornerRadius: 18, offsetX: 6, offsetY: 8 };
  */
 export function useWindowChrome() {
   useEffect(() => {
+    if (!isTauri()) return;
+
     invoke("apply_window_chrome", CHROME).catch(() => {
       // Not running under the native shell; nothing to style.
     });

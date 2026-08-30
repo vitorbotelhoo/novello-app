@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { getCurrentWindow } from "@tauri-apps/api/window";
+import { isTauri } from "./env";
 import { useFileStore } from "./fileStore";
 
 function basename(path: string): string {
@@ -15,10 +16,11 @@ export function useWindowTitle() {
   useEffect(() => {
     const name = currentPath ? basename(currentPath) : "Untitled";
     const title = `${isDirty ? "• " : ""}${name} - novello`;
-    try {
+
+    if (isTauri()) {
       void getCurrentWindow().setTitle(title);
-    } catch {
-      // No Tauri IPC bridge (e.g. running the frontend outside the native shell); cosmetic only.
+    } else {
+      document.title = title;
     }
   }, [currentPath, isDirty]);
 }

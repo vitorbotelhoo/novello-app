@@ -1,7 +1,7 @@
 import type { Point } from "./coords";
 
-const FALLBACK_HALF_WIDTH = 90;
-const FALLBACK_HALF_HEIGHT = 120;
+const FALLBACK_HALF_WIDTH = 200;
+const FALLBACK_HALF_HEIGHT = 250;
 
 /** A node's rendered half-width/half-height in world units, measured from the DOM since size depends on its text. */
 export function nodeHalfExtents(nodeId: string, zoom: number): { halfW: number; halfH: number } {

@@ -1,7 +1,9 @@
 import { useLayoutEffect, useRef } from "react";
 import { useCanvasStore } from "./store";
 
-const CELL_SIZE = 32;
+/* Scaled with the card so dot density per card stays what it was (32 for a
+   180-wide card). The design's own dot pitch could not be read reliably. */
+const CELL_SIZE = 72;
 
 export function CanvasGrid() {
   const ref = useRef<HTMLDivElement>(null);

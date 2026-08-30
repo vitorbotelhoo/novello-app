@@ -24,9 +24,3 @@
   pointer-events: none;
   transition: color 0.15s ease;
 }
-
-@media (prefers-color-scheme: dark) {
-  .novello-titlebar-title {
-    color: #b0a6b8;
-  }
-}

@@ -9,7 +9,9 @@ export interface Viewport {
 export const MIN_ZOOM = 0.1;
 export const MAX_ZOOM = 4;
 
-export const DEFAULT_VIEWPORT: Viewport = { x: 0, y: 0, zoom: 1 };
+/* Cards are 400x500 in world units, matching the design 1:1. At zoom 1 barely
+   two of them fit the default 900x680 window, so the canvas opens zoomed out. */
+export const DEFAULT_VIEWPORT: Viewport = { x: 0, y: 0, zoom: 0.7 };
 
 function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value));

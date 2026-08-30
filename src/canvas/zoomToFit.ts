@@ -16,8 +16,8 @@ function computeNodesBounds(nodes: CanvasNode[]) {
   for (const node of nodes) {
     const el = document.querySelector(`[data-node-id="${node.id}"]`);
     const rect = el?.getBoundingClientRect();
-    const halfW = rect ? rect.width / 2 / currentZoom : 100;
-    const halfH = rect ? rect.height / 2 / currentZoom : 40;
+    const halfW = rect ? rect.width / 2 / currentZoom : 200;
+    const halfH = rect ? rect.height / 2 / currentZoom : 250;
     minX = Math.min(minX, node.x - halfW);
     maxX = Math.max(maxX, node.x + halfW);
     minY = Math.min(minY, node.y - halfH);

@@ -11,8 +11,8 @@ import { saveFile, saveAs, openFile, newMap } from "./fileCommands";
 
 const ARROW_PAN_STEP = 60;
 const ARROW_PAN_STEP_FAST = 240;
-const ARROW_NUDGE_STEP = 4;
-const ARROW_NUDGE_STEP_FAST = 20;
+const ARROW_NUDGE_STEP = 8;
+const ARROW_NUDGE_STEP_FAST = 40;
 const ZOOM_STEP_FACTOR = 1.2;
 
 const ARROW_DELTAS: Record<string, [number, number]> = {

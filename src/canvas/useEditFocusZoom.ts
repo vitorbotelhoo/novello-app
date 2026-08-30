@@ -4,7 +4,7 @@ import { useNodesStore } from "./nodesStore";
 import { useCanvasStore, type Viewport } from "./store";
 import { animateViewport } from "./viewportAnimation";
 
-const FOCUS_ZOOM = 1.6;
+const FOCUS_ZOOM = 1;
 
 /** Zooms in on a node while it's being edited, then restores the prior view when editing ends. */
 export function useEditFocusZoom() {

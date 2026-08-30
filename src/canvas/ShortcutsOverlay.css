@@ -93,18 +93,3 @@
   color: var(--novello-thread-selected);
   white-space: nowrap;
 }
-
-@media (prefers-color-scheme: dark) {
-  .novello-help-button {
-    color: #9a90a4;
-  }
-  .novello-shortcuts-header {
-    color: #ece7f0;
-  }
-  .novello-shortcuts-label {
-    color: #c4bccc;
-  }
-  .novello-shortcuts-keys {
-    color: #d8c2e2;
-  }
-}

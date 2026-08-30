@@ -17,9 +17,3 @@
   pointer-events: none;
   z-index: 10;
 }
-
-@media (prefers-color-scheme: dark) {
-  .novello-zoom-indicator {
-    color: #d8d0dc;
-  }
-}

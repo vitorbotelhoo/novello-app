@@ -23,11 +23,24 @@ export interface CanvasEdge {
   toNodeId: string;
 }
 
-const NODE_PASTELS = ["#f2c9d8", "#c9e0f2", "#d8f2c9", "#f2e0c9", "#e0c9f2", "#c9f2ec"];
+/* Pitch between two connected cards in the Figma reference: 400 wide plus a
+   380 gap, which is what leaves room for the thread to read. */
+const CHILD_OFFSET_X = 780;
+
+/*
+ * Node palette, from Figma node 16:34 "White Mode".
+ *
+ * The hex lives here rather than in CSS because it is persisted: every node
+ * writes its own color into the .novello file. That means retuning the palette
+ * does not retroactively change maps already saved. Moving to a color id, so
+ * the file stores identity instead of value, is the optional step 2 in
+ * DESIGN_SYSTEM_PLAN.md.
+ */
+const NODE_COLORS = ["#ffa3a3", "#fbbe31", "#7eed94", "#84c4ff", "#ceaaf1", "#f89bfb"];
 
 let colorCursor = 0;
 function nextColor(): string {
-  const color = NODE_PASTELS[colorCursor % NODE_PASTELS.length];
+  const color = NODE_COLORS[colorCursor % NODE_COLORS.length];
   colorCursor += 1;
   return color;
 }
@@ -164,7 +177,7 @@ export const useNodesStore = create<NodesState>((set, get) => ({
         const src = state.nodes[id];
         if (!src) continue;
         const newId = generateId();
-        nodes[newId] = { ...src, id: newId, x: src.x + 28, y: src.y + 28 };
+        nodes[newId] = { ...src, id: newId, x: src.x + 60, y: src.y + 60 };
         newIds.push(newId);
       }
       return { nodes };
@@ -182,7 +195,7 @@ export const useNodesStore = create<NodesState>((set, get) => ({
     set((state) => ({
       nodes: {
         ...state.nodes,
-        [childId]: { id: childId, x: parent.x + 260, y: parent.y, text: "", color: nextColor() },
+        [childId]: { id: childId, x: parent.x + CHILD_OFFSET_X, y: parent.y, text: "", color: nextColor() },
       },
       edges: {
         ...state.edges,

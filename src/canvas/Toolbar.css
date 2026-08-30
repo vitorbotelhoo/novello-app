@@ -55,9 +55,3 @@
   opacity: 0.35;
   cursor: default;
 }
-
-@media (prefers-color-scheme: dark) {
-  .novello-toolbar-button {
-    color: #d8d0dc;
-  }
-}
